@@ -1,5 +1,4 @@
 PACKAGE=ejson
-PIP_INDEX=http://localshop.staging.yipit.com:8900/simple/server
 
 all: unit functional integration steadymark
 
@@ -29,8 +28,8 @@ prepare: clean install_deps
 
 install_deps:
 	@echo "Installing missing dependencies..."
-	@[ -e development.txt ] && (pip install -r requirements.txt) 2>&1>>build.log
-	@[ -e development.txt ] && (pip install -r development.txt) 2>&1>>build.log
+	@[ -e development.txt ] && (pip install -r requirements.txt) 2>&1>>.build.log
+	@[ -e development.txt ] && (pip install -r development.txt) 2>&1>>.build.log
 
 clean:
 	@echo "Removing garbage..."
@@ -38,4 +37,4 @@ clean:
 	@rm -rf .coverage *.egg-info *.log build dist MANIFEST
 
 publish:
-	python setup.py sdist upload -r $(PIP_INDEX)
+	python setup.py sdist upload
