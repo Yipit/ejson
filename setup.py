@@ -23,7 +23,7 @@ if __name__ == '__main__':
     setup(
         name="ejson",
         license="GPL",
-        version='0.1.0',
+        version='0.1.1',
         description=u'Extensible json serializer/deserializer library',
         long_description=open('README.md').read(),
         author=u'Lincoln de Sousa',
