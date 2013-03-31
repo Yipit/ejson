@@ -116,11 +116,8 @@ register a serializer. Take a look at the full example:
 ### One more step serializing complex objects
 
 In order to find the right deserializer for a given value, we also add
-the dotted class dotted path to the `json` info returned by our custom
-`dumps()` function.
-
-Notice that we also save the module where the class was declared, to
-avoid namespace collision.
+the dotted path that leads to the factory that built the instance to the
+`json` info returned by our custom `dumps()` function.
 
 ## Deserializing objects is a little bit harder
 
@@ -166,9 +163,10 @@ The `json.loads` function is not aware of our special parameter
 Writing code to deserialize objects that were serialized by the `ejson`
 library should be as simple as this following example:
 
-```
-import ejson
-from yourapp.person import Person
-person = ejson.loads(http_response.content)
-isinstance(person, Person) == True
+```python
+# steadymark: ignore
+>>> import ejson
+>>> from yourapp.person import Person
+>>> person = ejson.loads(http_response.content)
+>>> isinstance(person, Person) == True
 ```
