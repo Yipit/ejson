@@ -24,7 +24,7 @@ from importlib import import_module
 from collections import OrderedDict
 
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 
 __all__ = (
