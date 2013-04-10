@@ -71,7 +71,7 @@ def deserialize_date(data):
 
 
 @register_deserializer(datetime.time)
-def deserialize_datetime(data):
+def deserialize_time(data):
     """Return a time instance based on the values of the data param"""
     parsed = parser.parse(data)
     return parsed.time().replace(tzinfo=parsed.tzinfo)
