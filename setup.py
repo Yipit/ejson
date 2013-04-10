@@ -62,7 +62,7 @@ if __name__ == '__main__':
         license="GPL",
         version='0.1.3',
         description=u'Extensible json serializer/deserializer library',
-        long_description=open('README.md').read(),
+        long_description=local_file('README.md'),
         author=u'Lincoln de Sousa',
         author_email=u'lincoln@comum.org',
         url='https://github.com/Yipit/ejson',
