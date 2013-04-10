@@ -17,7 +17,6 @@ import datetime
 import decimal
 
 import ejson
-import ejson.serializers
 
 
 def test_tzinfo_helper():

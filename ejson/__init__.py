@@ -177,3 +177,6 @@ def _converter(data):
             '__value__': handler(data),
         }
     raise TypeError(repr(data) + " is not JSON serializable")
+
+
+from . import serializers
