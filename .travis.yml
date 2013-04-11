@@ -2,5 +2,4 @@ language: python
 python:
   - 2.7
 script: make
-install:
-    - pip install -r development.txt
+install: make install_deps
