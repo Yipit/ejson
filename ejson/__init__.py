@@ -38,13 +38,13 @@ REGISTRY = OrderedDict()
 DESERIALIZE_REGISTRY = OrderedDict()
 
 
-def loads(data):
+def loads(data, **kwargs):
     """Loads json data taking into account a registry of deserealizers.
     """
-    return json.loads(data, object_hook=_convert_from)
+    return json.loads(data, object_hook=_convert_from, **kwargs)
 
 
-def dumps(data):
+def dumps(data, **kwargs):
     """A wrapper around `json.dumps` that can handle objects that json
     module is not aware.
 
@@ -52,7 +52,7 @@ def dumps(data):
     registered by the API user, making it possible to convert any kind
     of object to types that the json library can handle.
     """
-    return json.dumps(data, default=_converter)
+    return json.dumps(data, default=_converter, **kwargs)
 
 
 def deserialize(klass, data):

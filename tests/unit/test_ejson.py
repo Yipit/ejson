@@ -176,3 +176,14 @@ def test_internal_convert_from_with_normal_values(deserialize, import_module):
 
     converted = ejson._convert_from({'name': 'Yuri G.'})
     converted.should.be.equal({'name': 'Yuri G.'})
+
+
+def test_forwarding_kwargs_to_loads():
+    my_float = lambda f: float(f) * 2
+    ejson.loads('{"num": 2.5}', parse_float=my_float).should.equal(
+        {'num': 5})
+
+
+def test_forwarding_kwargs_to_dumps():
+    ejson.dumps({'name': 'Grace M. Hoper'}, indent=2).should.equal(
+        '{\n  "name": "Grace M. Hoper"\n}')
