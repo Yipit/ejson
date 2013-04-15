@@ -66,7 +66,7 @@ if __name__ == '__main__':
         author=u'Lincoln de Sousa',
         author_email=u'lincoln@comum.org',
         url='https://github.com/Yipit/ejson',
-        packages=filter(lambda n: not n.startswith('tests'), find_packages()),
+        packages=find_packages(exclude=['*tests*']),
         install_requires=install_requires,
         dependency_links=dependency_links,
         classifiers=(

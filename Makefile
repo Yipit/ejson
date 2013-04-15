@@ -23,26 +23,26 @@ integration:
 run_test:
 	@if [ -d tests/$(suite) ]; then \
 		echo "Running \033[0;32m$(suite)\033[0m test suite"; \
-		make prepare; \
-		nosetests --stop --with-coverage --cover-package=$(PACKAGE) \
-			--cover-branches --verbosity=2 -s tests/$(suite) ; \
+		make prepare && \
+			nosetests --stop --with-coverage --cover-package=$(PACKAGE) \
+				--cover-branches --verbosity=2 -s tests/$(suite) ; \
 	fi
 
 steadymark:
 	@hash steadymark &> /dev/null && steadymark; echo  # This echo tells the shell that everything worked :P
 
-prepare: clean install_deps build_test_stub
+prepare: clean install_deps
 
 install_deps:
-	@if [ -z $$SKIP_DEPS ]; then \
-		echo "Installing missing dependencies..."; \
-		[ -e requirements.txt ] && pip install -r requirements.txt &> .build.log; \
-		[ -e development.txt  ] && pip install -r development.txt  &> .build.log; \
+	@if [ -z $$VIRTUAL_ENV ]; then \
+		echo "You're not running this from a virtualenv, wtf dude?"; \
+		exit 1; \
 	fi
 
-build_test_stub:
-	@python setup.py build
-	@find ./build -name '*.so' -exec mv {} tests/unit \;
+	@if [ -z $$SKIP_DEPS ]; then \
+		echo "Installing missing dependencies..."; \
+		[ -e development.txt  ] && pip install -r development.txt  &> .build.log; \
+	fi
 
 clean:
 	@echo "Removing garbage..."
