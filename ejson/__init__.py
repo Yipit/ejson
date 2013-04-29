@@ -19,9 +19,11 @@
 """Implementation of the RFC-00003-extensible-serialization proposal
 """
 
-import json
-from importlib import import_module
+from __future__ import unicode_literals
 from collections import OrderedDict
+from importlib import import_module
+import cgi
+import json
 
 
 __version__ = '0.1.4'
@@ -44,7 +46,7 @@ def loads(data, **kwargs):
     return json.loads(data, object_hook=_convert_from, **kwargs)
 
 
-def dumps(data, **kwargs):
+def dumps(data, escape=False, **kwargs):
     """A wrapper around `json.dumps` that can handle objects that json
     module is not aware.
 
@@ -52,7 +54,10 @@ def dumps(data, **kwargs):
     registered by the API user, making it possible to convert any kind
     of object to types that the json library can handle.
     """
-    return json.dumps(data, default=_converter, **kwargs)
+    converted = json.dumps(data, default=_converter, **kwargs)
+    if escape:
+        return cgi.escape(converted)
+    return converted
 
 
 def deserialize(klass, data):

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+#
 # ejson - Extensible json serializer/deserializer library
 #
 # Copyright (c) 2012-2013  Lincoln Clarete <lincoln@comum.org>
@@ -16,9 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import ejson
+from __future__ import unicode_literals
 from datetime import datetime
 from mock import Mock, patch
+import ejson
 
 
 class Person(object):
@@ -187,3 +190,14 @@ def test_forwarding_kwargs_to_loads():
 def test_forwarding_kwargs_to_dumps():
     ejson.dumps({'name': 'Grace M. Hoper'}, indent=2).should.equal(
         '{\n  "name": "Grace M. Hoper"\n}')
+
+
+def test_escaping_string_on_dumps():
+    # Given that I have some data to serialize
+    data = {'blah': '<h1>blah & bleh</h1>'}
+
+    # When I try to dump it using the "escape" flag
+    escaped = ejson.dumps(data, escape=True)
+
+    # Then I see it was escaped properly
+    escaped.should.equal('{"blah": "&lt;h1&gt;blah &amp; bleh&lt;/h1&gt;"}')
