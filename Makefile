@@ -9,7 +9,7 @@ PACKAGE=ejson
 CUSTOM_PIP_INDEX=
 # </variables>
 
-all: unit functional integration steadymark
+all: unit functional integration acceptance steadymark
 
 unit:
 	@make run_test suite=unit
@@ -20,6 +20,18 @@ functional:
 integration:
 	@make run_test suite=integration
 
+acceptance:
+	@if hash lettuce 2>/dev/null; then \
+		lettuce; \
+	fi
+
+steadymark:
+	@if hash steadymark 2>/dev/null; then \
+		steadymark; \
+	fi
+
+prepare: clean install_deps
+
 run_test:
 	@if [ -d tests/$(suite) ]; then \
 		echo "Running \033[0;32m$(suite)\033[0m test suite"; \
@@ -27,11 +39,6 @@ run_test:
 			nosetests --stop --with-coverage --cover-package=$(PACKAGE) \
 				--cover-branches --verbosity=2 -s tests/$(suite) ; \
 	fi
-
-steadymark:
-	@hash steadymark &> /dev/null && steadymark; echo  # This echo tells the shell that everything worked :P
-
-prepare: clean install_deps
 
 install_deps:
 	@if [ -z $$VIRTUAL_ENV ]; then \
@@ -41,8 +48,10 @@ install_deps:
 
 	@if [ -z $$SKIP_DEPS ]; then \
 		echo "Installing missing dependencies..."; \
-		[ -e development.txt  ] && pip install -r development.txt  &> .build.log; \
+		[ -e development.txt  ] && pip install -r development.txt; \
 	fi
+
+	@python setup.py develop &> .build.log
 
 clean:
 	@echo "Removing garbage..."
@@ -54,6 +63,7 @@ clean:
 publish:
 	@if [ -e "$$HOME/.pypirc" ]; then \
 		echo "Uploading to '$(CUSTOM_PIP_INDEX)'"; \
+		python setup.py register -r "$(CUSTOM_PIP_INDEX)"; \
 		python setup.py sdist upload -r "$(CUSTOM_PIP_INDEX)"; \
 	else \
 		echo "You should create a file called \`.pypirc' under your home dir.\n"; \
