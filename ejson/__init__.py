@@ -56,6 +56,13 @@ def dumps(data, escape=False, **kwargs):
     """
     converted = json.dumps(data, default=_converter, **kwargs)
     if escape:
+        # We're escaping the whole dumped string here cause there's no (easy)
+        # way to hook into the native json library and change how they process
+        # values like strings, None objects and some other "literal" stuff.
+        #
+        # Also, we're not escaping quotes here cause they're escaped by the
+        # native json library already. So, we just escape basic html entities,
+        # like <, > and &;
         return cgi.escape(converted)
     return converted
 
