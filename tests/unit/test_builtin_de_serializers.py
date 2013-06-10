@@ -22,9 +22,8 @@ import ejson
 def test_tzinfo_helper():
     # Given that I wanna handle basic time zone information in my datetime
     # serializers
-    obj = datetime.datetime(
-        2013, 03, 30, 12, 12, 12, 123456,
-        ejson.serializers.TZInfoHelper(60*3, "America/Sao_Paulo"))
+    obj = datetime.datetime(2013, 0o3, 30, 12, 12, 12, 123456,
+                            ejson.serializers.TZInfoHelper(60 * 3, "America/Sao_Paulo"))
 
     # Then I see that my time zone informatino was properly set on my datetime
     # object.
@@ -36,16 +35,15 @@ def test_tzinfo_helper():
 def test_datetime():
     # Given that I have an instance of the datetime object that must be
     # serialized
-    obj = datetime.datetime(2013, 03, 30, 12, 12, 12)
+    obj = datetime.datetime(2013, 0o3, 30, 12, 12, 12)
 
     # When I serialize it
     serialized = ejson.dumps(obj)
 
     # Then I see the proper representation of the instance that will allow us
     # to deserialize it later
-    serialized.should.equal(
-        '{"__class__": "datetime.datetime",'
-        ' "__value__": "2013-03-30T12:12:12"}')
+    serialized.should.contain('"__class__": "datetime.datetime"')
+    serialized.should.contain('"__value__": "2013-03-30T12:12:12"')
 
     # When I try to deserialize, Then I see that it also works!
     ejson.loads(serialized).should.equal(obj)
@@ -54,18 +52,16 @@ def test_datetime():
 def test_datetime_with_microseconds():
     # Given that I have an instance of the datetime object with timezone
     # information, must be serialized
-    obj = datetime.datetime(
-        2013, 03, 30, 12, 12, 12, 123456,
-        ejson.serializers.TZInfoHelper(60*3, "America/Sao_Paulo"))
+    obj = datetime.datetime(2013, 0o3, 30, 12, 12, 12, 123456,
+                            ejson.serializers.TZInfoHelper(60 * 3, "America/Sao_Paulo"))
 
     # When I serialize it
     serialized = ejson.dumps(obj)
 
     # Then I see the proper representation of the instance that will allow us
     # to deserialize it later
-    serialized.should.equal(
-        '{"__class__": "datetime.datetime",'
-        ' "__value__": "2013-03-30T12:12:12.123456+03:00"}')
+    serialized.should.contain('"__class__": "datetime.datetime"')
+    serialized.should.contain('"__value__": "2013-03-30T12:12:12.123456+03:00"')
 
     # When I try to deserialize, Then I see it works again
     ejson.loads(serialized).should.equal(obj)
@@ -73,15 +69,15 @@ def test_datetime_with_microseconds():
 
 def test_date():
     # Given that I have an instance of the date object that must be serialized
-    obj = datetime.date(2013, 03, 30)
+    obj = datetime.date(2013, 0o3, 30)
 
     # When I serialize it
     serialized = ejson.dumps(obj)
 
     # Then I see the proper representation of the instance that will allow us
     # to deserialize it later
-    serialized.should.equal(
-        '{"__class__": "datetime.date", "__value__": "2013-03-30"}')
+    serialized.should.contain('"__class__": "datetime.date"')
+    serialized.should.contain('"__value__": "2013-03-30"')
 
     # When I try to load this info again, Then I see that it also works
     ejson.loads(serialized).should.equal(obj)
@@ -95,8 +91,8 @@ def test_time():
     serialized = ejson.dumps(obj)
 
     # Then I see that it was correctly serialized
-    serialized.should.equal(
-        '{"__class__": "datetime.time", "__value__": "01:12:50.000123"}')
+    serialized.should.contain('"__class__": "datetime.time"')
+    serialized.should.contain('"__value__": "01:12:50.000123"')
 
     # When I try to deserialize, I see that it also works
     ejson.loads(serialized).should.equal(obj)
@@ -112,8 +108,8 @@ def test_time_with_timezone():
     serialized = ejson.dumps(obj)
 
     # Then I see that it was correctly serialized
-    serialized.should.equal(
-        '{"__class__": "datetime.time", "__value__": "01:12:50.000123-02:00"}')
+    serialized.should.contain('"__class__": "datetime.time"')
+    serialized.should.contain('"__value__": "01:12:50.000123-02:00"')
 
     # When I try to deserialize, I see that it also works
     ejson.loads(serialized).should.equal(obj)
@@ -127,8 +123,8 @@ def test_decimal():
     serialized = ejson.dumps(obj)
 
     # Then I see the proper string description of the object
-    serialized.should.equal(
-        '{"__class__": "decimal.Decimal", "__value__": "0.14285714285714285"}')
+    serialized.should.contain('"__class__": "decimal.Decimal"')
+    serialized.should.contain('"__value__": "0.14285714285714285"')
 
     # When I try to deserialize, I see that it also works
     ejson.loads(serialized).should.equal(obj)

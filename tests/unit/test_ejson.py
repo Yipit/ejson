@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 from datetime import datetime
 from mock import Mock, patch
 import ejson
@@ -32,7 +32,7 @@ class Person(object):
         self.age = age
 
     def __repr__(self):
-        return u'Person("{}", {})'.format(self.name, self.age)
+        return 'Person("{}", {})'.format(self.name, self.age)
 
 
 def test_register_serializer():
@@ -64,10 +64,10 @@ def test_register_serializer():
 
 def test_serialization_with_datetime():
     ejson.cleanup_registry()
-    value = {'dt': datetime(2012, 8, 22, 3, 44, 05)}
+    value = {'dt': datetime(2012, 8, 22, 3, 44, 0o5)}
 
     # Before registering
-    ejson.dumps.when.called_with(value).should.throw(
+    ejson.dumps.when.called_with(value, sort_keys=True).should.throw(
         TypeError,
         'datetime.datetime(2012, 8, 22, 3, 44, 5) is not JSON serializable')
 
@@ -75,7 +75,9 @@ def test_serialization_with_datetime():
     @ejson.register_serializer(datetime)
     def serialize_datetime(instance):
         return instance.isoformat()
-    ejson.dumps(value).should.be.equals(
+
+
+    ejson.dumps(value, sort_keys=True).should.be.equals(
         '{"dt": {"__class__": "datetime.datetime", "__value__": "2012-08-22T03:44:05"}}')
 
 
@@ -84,15 +86,17 @@ def test_serialization_with_custom_object():
     value = Person('Lincoln', 25)
 
     # Before registering
-    ejson.dumps.when.called_with(value).should.throw(
+    ejson.dumps.when.called_with(value, sort_keys=True).should.throw(
         TypeError, 'Person("Lincoln", 25) is not JSON serializable')
 
     # After registering
     @ejson.register_serializer(Person)
     def serialize_person(instance):
         return {"name": instance.name, "age": instance.age}
-    ejson.dumps(value).should.be.equals(
-        '{"__class__": "tests.unit.test_ejson.Person", "__value__": {"age": 25, "name": "Lincoln"}}')
+
+    dumped = ejson.dumps(value, sort_keys=True)
+    dumped.should.be.contain('"__class__": "tests.unit.test_ejson.Person"')
+    dumped.should.be.contain('"__value__": {"age": 25, "name": "Lincoln"}')
 
 
 def test_deserialization_registry():
@@ -150,8 +154,8 @@ def test_deserialization_with_no_objects_registered():
 @patch('ejson.import_module')
 @patch('ejson.deserialize')
 def test_internal_convert_from(deserialize, import_module):
-    (u'Making sure that the _convert_from function can find the right '
-     u'module/class described by the dotted notation in the "__class__" key')
+    ('Making sure that the _convert_from function can find the right '
+     'module/class described by the dotted notation in the "__class__" key')
 
     mymodule = Mock()
     mymodule.MyClass = Mock()
@@ -170,8 +174,8 @@ def test_internal_convert_from(deserialize, import_module):
 @patch('ejson.import_module')
 @patch('ejson.deserialize')
 def test_internal_convert_from_with_normal_values(deserialize, import_module):
-    (u'Making sure that the _convert_from function can handle values without '
-     u'the __class__/__value__ special keys')
+    ('Making sure that the _convert_from function can handle values without '
+     'the __class__/__value__ special keys')
 
     mymodule = Mock()
     mymodule.MyClass = Mock()
