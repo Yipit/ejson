@@ -54,6 +54,9 @@ def dumps(data, escape=False, **kwargs):
     registered by the API user, making it possible to convert any kind
     of object to types that the json library can handle.
     """
+    if 'sort_keys' not in kwargs:
+        kwargs['sort_keys'] = True
+
     converted = json.dumps(data, default=_converter, **kwargs)
     if escape:
         # We're escaping the whole dumped string here cause there's no (easy)
